@@ -1,24 +1,16 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import FdRates from './components/FdRates';
 
 function App() {
+  // Get the current date
+  const currentDate = new Date().toLocaleDateString();
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>FD Rates</h1> {/* Title for the app */}
+        <p>{currentDate}</p> {/* Display the current date */}
       </header>
       
       {/* Adding the FdRates component */}
@@ -30,5 +22,3 @@ function App() {
 }
 
 export default App;
-
-
