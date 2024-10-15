@@ -4,7 +4,7 @@ import FdRates from './components/FdRates';
 
 function App() {
   // Get the current date
-  const currentDate = new Date().toLocaleDateString();
+  const currentDate = new Date().toLocaleDateString('en-GB');
 
   return (
     <div className="App">
