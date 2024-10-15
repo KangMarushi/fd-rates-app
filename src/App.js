@@ -1,5 +1,7 @@
+import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import FdRates from './components/FdRates';
 
 function App() {
   return (
@@ -18,8 +20,15 @@ function App() {
           Learn React
         </a>
       </header>
+      
+      {/* Adding the FdRates component */}
+      <div className="FdRates-section">
+        <FdRates />
+      </div>
     </div>
   );
 }
 
 export default App;
+
+
