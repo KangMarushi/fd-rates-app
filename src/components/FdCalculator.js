@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './FdCalculator.css'; // Ensure you have styles defined for loading animation and table
 
 const FdCalculator = () => {
-    const [fdData, setFdData] = useState([]);
     const [amount, setAmount] = useState('');
     const [tenure, setTenure] = useState('7 days'); // Default to '7 days'
     const [compounding, setCompounding] = useState('yearly');
