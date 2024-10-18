@@ -1,28 +1,38 @@
 .App {
   text-align: center;
-  padding: 20px; /* Add some padding for better spacing */
+  padding: 20px;
 }
 
-.App-header {
-  background-color: #282c34; /* Change background for better contrast */
-  padding: 10px;
-  border-radius: 10px; /* Add rounded corners */
-  margin-bottom: 20px; /* Space between header and FD Rates table */
-  color: white; /* Change text color for visibility */
+.view-options button {
+  margin: 10px;
+  padding: 10px 20px;
+  background-color: #55356e;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
-.FdRates-section {
-  max-width: 800px; /* Limit width for larger screens */
-  margin: 0 auto; /* Center the section */
+.view-options button:hover {
+  background-color: #76a787;
 }
 
-/* Responsive design for smaller screens */
+.content {
+  margin-top: 20px;
+}
+
 @media (max-width: 600px) {
-  .App-header {
-    font-size: 1.5em; /* Make header text smaller on mobile */
+  .content {
+    width: 100%;
+    padding: 10px;
   }
-  
-  .FdRates-section {
-    padding: 0 10px; /* Add padding on smaller screens */
+
+  table {
+    font-size: 14px;
+  }
+
+  .view-options button {
+    width: 100%;
+    margin-bottom: 10px;
   }
 }
