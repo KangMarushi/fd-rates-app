@@ -1,0 +1,44 @@
+.calculator-container {
+  text-align: center;
+}
+
+.results-table {
+  margin: 20px auto;
+  border-collapse: collapse;
+  width: 80%; /* Adjust width as necessary */
+}
+
+.results-table th, .results-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center; /* Center-align the table text */
+}
+
+.loading-animation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Adjust as necessary */
+}
+
+.loading-animation .loader {
+  display: inline-block;
+  width: 40px; /* Loader size */
+  height: 40px; /* Loader size */
+  border: 5px solid #55356E; /* Loader color */
+  border-top: 5px solid #76A787; /* Top color for contrast */
+  border-radius: 50%;
+  animation: spin 1s linear infinite; /* Spin animation */
+  margin-left: 10px; /* Space between text and loader */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px; /* Space above error message */
+}
