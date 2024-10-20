@@ -3,7 +3,7 @@ import './FdCalculator.css'; // Ensure you have styles defined for loading anima
 
 const FdCalculator = () => {
     const [amount, setAmount] = useState('');
-    const [tenure, setTenure] = useState('7 days'); // Default to '7 days'
+    const [tenure, setTenure] = useState('1 year'); // Default to '7 days'
     const [compounding, setCompounding] = useState('quarterly');
     const [tds, setTds] = useState(0);
     const [payout, setPayout] = useState('maturity');
