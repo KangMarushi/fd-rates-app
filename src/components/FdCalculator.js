@@ -69,15 +69,18 @@ const FdCalculator = () => {
             const tdsDeductible = (tds / 100) * interestEarned;
             const interestAfterTds = interestEarned - tdsDeductible;
 
-            return {
+            // Prepare result object
+            const result = {
                 bank: bank['Bank Name'],
                 maturityValue,
                 interestEarned,
                 tdsDeductible,
                 interestAfterTds,
                 roi: rate, // Interest rate used for calculation
-                highRoiTenure: bank['High ROI Tenure'] || '', // High ROI tenure
+                highRoiTenure: tenure === 'Special schemes in Days' ? bank['High ROI Tenure'] || '' : null, // High ROI tenure only for special schemes
             };
+
+            return result;
         }).filter(result => result !== null); // Filter out invalid entries
 
         // Sort by maturity value in descending order
@@ -162,7 +165,7 @@ const FdCalculator = () => {
                                 <th>Interest Earned</th>
                                 <th>TDS Deductible</th>
                                 <th>Interest After TDS</th>
-                                <th>High ROI Tenure</th>
+                                {results.some(result => result.highRoiTenure) && <th>High ROI Tenure</th>} {/* Conditional rendering of the header */}
                             </tr>
                         </thead>
                         <tbody>
@@ -174,7 +177,7 @@ const FdCalculator = () => {
                                     <td>{result.interestEarned.toFixed(2)}</td>
                                     <td>{result.tdsDeductible.toFixed(2)}</td>
                                     <td>{result.interestAfterTds.toFixed(2)}</td>
-                                    <td>{result.highRoiTenure}</td>
+                                    {result.highRoiTenure && <td>{result.highRoiTenure}</td>} {/* Conditional rendering of the tenure */}
                                 </tr>
                             ))}
                         </tbody>
