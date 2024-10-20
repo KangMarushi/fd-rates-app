@@ -5,7 +5,7 @@ const FdCalculator = () => {
     const [amount, setAmount] = useState('');
     const [tenure, setTenure] = useState('7 days'); // Default to '7 days'
     const [compounding, setCompounding] = useState('yearly');
-    const [tds, setTds] = useState(0);
+    const [tds, setTds] = useState(0); // Default to 0% TDS
     const [payout, setPayout] = useState('maturity');
     const [showResults, setShowResults] = useState(false);
     const [results, setResults] = useState([]);
@@ -163,9 +163,9 @@ const FdCalculator = () => {
                                 <th>Interest Rate (%)</th>
                                 <th>Maturity Value</th>
                                 <th>Interest Earned</th>
-                                <th>TDS Deductible</th>
+                                {tds > 0 && <th>TDS Deductible</th>} {/* Conditionally render TDS header */}
                                 <th>Interest After TDS</th>
-                                {results.some(result => result.highRoiTenure) && <th>High ROI Tenure</th>} {/* Conditional rendering of the header */}
+                                {results.some(result => result.highRoiTenure) && <th>High ROI Tenure</th>} {/* Conditional rendering of the High ROI Tenure header */}
                             </tr>
                         </thead>
                         <tbody>
@@ -175,9 +175,9 @@ const FdCalculator = () => {
                                     <td>{result.roi}</td>
                                     <td>{result.maturityValue.toFixed(2)}</td>
                                     <td>{result.interestEarned.toFixed(2)}</td>
-                                    <td>{result.tdsDeductible.toFixed(2)}</td>
+                                    {tds > 0 && <td>{result.tdsDeductible.toFixed(2)}</td>} {/* Conditionally render TDS value */}
                                     <td>{result.interestAfterTds.toFixed(2)}</td>
-                                    {result.highRoiTenure && <td>{result.highRoiTenure}</td>} {/* Conditional rendering of the tenure */}
+                                    {result.highRoiTenure && <td>{result.highRoiTenure}</td>} {/* Conditional rendering of the High ROI Tenure */}
                                 </tr>
                             ))}
                         </tbody>
