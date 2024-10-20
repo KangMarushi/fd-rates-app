@@ -3,7 +3,7 @@ import './FdCalculator.css';
 
 const FdCalculator = () => {
     const [amount, setAmount] = useState('');
-    const [tenure, setTenure] = useState('1 year'); // Default to '1 year'
+    const [tenure, setTenure] = useState('1 year');
     const [compounding, setCompounding] = useState('yearly');
     const [tds, setTds] = useState(0); // Default to 0% TDS
     const [payout, setPayout] = useState('maturity');
@@ -96,7 +96,8 @@ const FdCalculator = () => {
                     <input
                         type="number"
                         value={amount}
-                        onChange={(e) => setAmount(e.target.value)} />
+                        onChange={(e) => setAmount(e.target.value)}
+                    />
                 </div>
                 <div>
                     <label>Tenure:</label>
@@ -131,11 +132,12 @@ const FdCalculator = () => {
                     <label>Payout:</label>
                     <select value={payout} onChange={(e) => setPayout(e.target.value)}>
                         <option value="maturity">Maturity</option>
-                    <option value="monthly">Monthly</option>
-            </select>
-        </div><button type="button" onClick={handleCalculate}>
-                Calculate
-            </button>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+                <button type="button" onClick={handleCalculate}>
+                    Calculate
+                </button>
             </form>
 
             {loading && (
@@ -172,7 +174,9 @@ const FdCalculator = () => {
                                     <td>{result.interestEarned.toFixed(2)}</td>
                                     {tds !== 0 && <td>{result.tdsDeductible.toFixed(2)}</td>}
                                     {tds !== 0 && <td>{result.interestAfterTds.toFixed(2)}</td>}
-                                    {result.highRoiTenure && <td>{result.highRoiTenure}</td>}
+                                    {tenure === 'Special schemes in Days' && result.highRoiTenure && (
+                                        <td>{result.highRoiTenure}</td>
+                                    )}
                                 </tr>
                             ))}
                         </tbody>
@@ -184,4 +188,3 @@ const FdCalculator = () => {
 };
 
 export default FdCalculator;
-
