@@ -96,8 +96,7 @@ const FdCalculator = () => {
                     <input
                         type="number"
                         value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                    />
+                        onChange={(e) => setAmount(e.target.value)} />
                 </div>
                 <div>
                     <label>Tenure:</label>
@@ -132,12 +131,11 @@ const FdCalculator = () => {
                     <label>Payout:</label>
                     <select value={payout} onChange={(e) => setPayout(e.target.value)}>
                         <option value="maturity">Maturity</option>
-                        <option value="monthly">Monthly</option>
-                    </select>
-                </div>
-                <button type="button" onClick={handleCalculate}>
-                    Calculate
-                </button>
+                    <option value="monthly">Monthly</option>
+            </select>
+        </div><button type="button" onClick={handleCalculate}>
+                Calculate
+            </button>
             </form>
 
             {loading && (
@@ -186,3 +184,4 @@ const FdCalculator = () => {
 };
 
 export default FdCalculator;
+
