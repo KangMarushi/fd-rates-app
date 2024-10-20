@@ -96,7 +96,8 @@ const FdCalculator = () => {
                     <input
                         type="number"
                         value={amount}
-                        onChange={(e) => setAmount(e.target.value)} />
+                        onChange={(e) => setAmount(e.target.value)}
+                    />
                 </div>
                 <div>
                     <label>Tenure:</label>
@@ -121,20 +122,22 @@ const FdCalculator = () => {
                 </div>
                 <div>
                     <label>TDS Percentage:</label>
-                    <select value={tds} onChange={(e) => setTds(e.target.value)}>
+                    <select value={tds} onChange={(e) => setTds(Number(e.target.value))}>
                         <option value={0}>0%</option>
-                    <option value={10}>10%</option>
-                    <option value={20}>20%</option>
+                        <option value={10}>10%</option>
+                        <option value={20}>20%</option>
                     </select>
-            </div><div>
-                <label>Payout:</label>
-                <select value={payout} onChange={(e) => setPayout(e.target.value)}>
-                    <option value="maturity">Maturity</option>
-                    <option value="monthly">Monthly</option>
-                </select>
-            </div><button type="button" onClick={handleCalculate}>
-                Calculate
-            </button>
+                </div>
+                <div>
+                    <label>Payout:</label>
+                    <select value={payout} onChange={(e) => setPayout(e.target.value)}>
+                        <option value="maturity">Maturity</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+                <button type="button" onClick={handleCalculate}>
+                    Calculate
+                </button>
             </form>
 
             {loading && (
@@ -155,21 +158,23 @@ const FdCalculator = () => {
                                 <th>Interest Rate (%)</th>
                                 <th>Maturity Value</th>
                                 <th>Interest Earned</th>
-                                {tds > 0 && <th>TDS Deductible</th>} {/* Conditionally render TDS header */}
-                                {tds > 0 && <th>Interest After TDS</th>} {/* Conditionally render Interest After TDS */}
-                                {tenure === 'Special schemes in Days' && <th>High ROI Tenure</th>} {/* Only show High ROI Tenure for special schemes */}
+                                {/* Conditionally render TDS columns based on TDS value */}
+                                {tds !== 0 && <th>TDS Deductible</th>}
+                                {tds !== 0 && <th>Interest After TDS</th>}
+                                {/* Conditionally render High ROI Tenure only for special schemes */}
+                                {tenure === 'Special schemes in Days' && <th>High ROI Tenure</th>}
                             </tr>
                         </thead>
                         <tbody>
                             {results.map((result, index) => (
                                 <tr key={index}>
                                     <td>{result.bank}</td>
-                                    <td>{result.roi}</td>
+                                    <td>{result.roi.toFixed(2)}</td>
                                     <td>{result.maturityValue.toFixed(2)}</td>
                                     <td>{result.interestEarned.toFixed(2)}</td>
-                                    {tds > 0 && <td>{result.tdsDeductible.toFixed(2)}</td>} {/* Conditionally render TDS value */}
-                                    {tds > 0 && <td>{result.interestAfterTds.toFixed(2)}</td>} {/* Conditionally render Interest After TDS */}
-                                    {result.highRoiTenure && <td>{result.highRoiTenure}</td>} {/* Only show High ROI Tenure for special schemes */}
+                                    {tds !== 0 && <td>{result.tdsDeductible.toFixed(2)}</td>}
+                                    {tds !== 0 && <td>{result.interestAfterTds.toFixed(2)}</td>}
+                                    {result.highRoiTenure && <td>{result.highRoiTenure}</td>}
                                 </tr>
                             ))}
                         </tbody>
