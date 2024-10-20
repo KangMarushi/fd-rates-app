@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import './FdCalculator.css'; // Ensure you have styles defined for loading animation and table
+import './FdCalculator.css';
 
 const FdCalculator = () => {
     const [amount, setAmount] = useState('');
-    const [tenure, setTenure] = useState('7 days'); // Default to '7 days'
+    const [tenure, setTenure] = useState('1 year'); // Default to '1 year'
     const [compounding, setCompounding] = useState('yearly');
     const [tds, setTds] = useState(0); // Default to 0% TDS
     const [payout, setPayout] = useState('maturity');
@@ -36,7 +36,6 @@ const FdCalculator = () => {
         setLoading(true);
         setLoadingMessage('Fetching Interest Rates...');
 
-        // Fetch FD data from the API
         let apiData = [];
         try {
             const response = await fetch('https://fd-roi-api.onrender.com/api/rates');
@@ -54,41 +53,37 @@ const FdCalculator = () => {
         const tenureMonths = getTenureInMonths(tenure);
         const calculatedResults = apiData.map((bank) => {
             const rate = (tenure === 'Special schemes in Days')
-                ? bank['High ROI'] // Use highest ROI for special schemes
-                : bank.Rates[tenure]; // Fetch rate based on selected tenure
-            
+                ? bank['High ROI']
+                : bank.Rates[tenure];
+
             if (!rate) {
                 console.warn(`No interest rate available for tenure ${tenure} in bank ${bank['Bank Name']}`);
                 return null;
             }
 
-            // Calculate maturity value
             const frequency = compoundingMap[compounding];
             const maturityValue = amount * Math.pow(1 + rate / (100 * frequency), frequency * tenureMonths / 12);
             const interestEarned = maturityValue - amount;
             const tdsDeductible = (tds / 100) * interestEarned;
             const interestAfterTds = interestEarned - tdsDeductible;
 
-            // Prepare result object
             const result = {
                 bank: bank['Bank Name'],
                 maturityValue,
                 interestEarned,
                 tdsDeductible,
                 interestAfterTds,
-                roi: rate, // Interest rate used for calculation
-                highRoiTenure: tenure === 'Special schemes in Days' ? bank['High ROI Tenure'] || '' : null, // High ROI tenure only for special schemes
+                roi: rate,
+                highRoiTenure: tenure === 'Special schemes in Days' ? bank['High ROI Tenure'] || '' : null,
             };
 
             return result;
-        }).filter(result => result !== null); // Filter out invalid entries
+        }).filter(result => result !== null);
 
-        // Sort by maturity value in descending order
         const sortedResults = calculatedResults.sort((a, b) => b.maturityValue - a.maturityValue);
         setResults(sortedResults);
         setShowResults(true);
 
-        setLoadingMessage('Deducting TDS!');
         setLoading(false);
     };
 
@@ -101,8 +96,7 @@ const FdCalculator = () => {
                     <input
                         type="number"
                         value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                    />
+                        onChange={(e) => setAmount(e.target.value)} />
                 </div>
                 <div>
                     <label>Tenure:</label>
@@ -129,20 +123,18 @@ const FdCalculator = () => {
                     <label>TDS Percentage:</label>
                     <select value={tds} onChange={(e) => setTds(e.target.value)}>
                         <option value={0}>0%</option>
-                        <option value={10}>10%</option>
-                        <option value={20}>20%</option>
+                    <option value={10}>10%</option>
+                    <option value={20}>20%</option>
                     </select>
-                </div>
-                <div>
-                    <label>Payout:</label>
-                    <select value={payout} onChange={(e) => setPayout(e.target.value)}>
-                        <option value="maturity">Maturity</option>
-                        <option value="monthly">Monthly</option>
-                    </select>
-                </div>
-                <button type="button" onClick={handleCalculate}>
-                    Calculate
-                </button>
+            </div><div>
+                <label>Payout:</label>
+                <select value={payout} onChange={(e) => setPayout(e.target.value)}>
+                    <option value="maturity">Maturity</option>
+                    <option value="monthly">Monthly</option>
+                </select>
+            </div><button type="button" onClick={handleCalculate}>
+                Calculate
+            </button>
             </form>
 
             {loading && (
@@ -164,8 +156,8 @@ const FdCalculator = () => {
                                 <th>Maturity Value</th>
                                 <th>Interest Earned</th>
                                 {tds > 0 && <th>TDS Deductible</th>} {/* Conditionally render TDS header */}
-                                <th>Interest After TDS</th>
-                                {results.some(result => result.highRoiTenure) && <th>High ROI Tenure</th>} {/* Conditional rendering of the High ROI Tenure header */}
+                                {tds > 0 && <th>Interest After TDS</th>} {/* Conditionally render Interest After TDS */}
+                                {tenure === 'Special schemes in Days' && <th>High ROI Tenure</th>} {/* Only show High ROI Tenure for special schemes */}
                             </tr>
                         </thead>
                         <tbody>
@@ -176,8 +168,8 @@ const FdCalculator = () => {
                                     <td>{result.maturityValue.toFixed(2)}</td>
                                     <td>{result.interestEarned.toFixed(2)}</td>
                                     {tds > 0 && <td>{result.tdsDeductible.toFixed(2)}</td>} {/* Conditionally render TDS value */}
-                                    <td>{result.interestAfterTds.toFixed(2)}</td>
-                                    {result.highRoiTenure && <td>{result.highRoiTenure}</td>} {/* Conditional rendering of the High ROI Tenure */}
+                                    {tds > 0 && <td>{result.interestAfterTds.toFixed(2)}</td>} {/* Conditionally render Interest After TDS */}
+                                    {result.highRoiTenure && <td>{result.highRoiTenure}</td>} {/* Only show High ROI Tenure for special schemes */}
                                 </tr>
                             ))}
                         </tbody>
