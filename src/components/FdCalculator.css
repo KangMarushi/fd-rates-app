@@ -1,35 +1,76 @@
+/* FdCalculator.css */
+
 .calculator-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
+}
+
+h2 {
+  color: #333;
   text-align: center;
+  margin-bottom: 1.5rem;
 }
 
-.results-table {
-  margin: 20px auto;
-  border-collapse: collapse;
-  width: 80%; /* Adjust width as necessary */
+form {
+  display: grid;
+  gap: 1rem;
 }
 
-.results-table th, .results-table td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: center; /* Center-align the table text */
+form > div {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 0.5rem;
+  color: #555;
+  font-weight: 500;
+}
+
+input, select {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #4caf50;
+}
+
+button {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
 }
 
 .loading-animation {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100px; /* Adjust as necessary */
+  text-align: center;
+  margin-top: 1rem;
+  font-style: italic;
+  color: #666;
 }
 
-.loading-animation .loader {
+.loader {
   display: inline-block;
-  width: 40px; /* Loader size */
-  height: 40px; /* Loader size */
-  border: 5px solid #55356E; /* Loader color */
-  border-top: 5px solid #76A787; /* Top color for contrast */
-  border-radius: 50%;
-  animation: spin 1s linear infinite; /* Spin animation */
-  margin-left: 10px; /* Space between text and loader */
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
@@ -38,7 +79,53 @@
 }
 
 .error-message {
-  color: red;
-  font-weight: bold;
-  margin-top: 10px; /* Space above error message */
+  color: #f44336;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.results-container {
+  margin-top: 2rem;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.results-table th, .results-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.results-table th {
+  background-color: #4caf50;
+  color: white;
+  font-weight: 500;
+}
+
+.results-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.results-table tr:hover {
+  background-color: #e9e9e9;
+}
+
+@media (max-width: 600px) {
+  .calculator-container {
+      padding: 1rem;
+  }
+
+  .results-table {
+      font-size: 0.9rem;
+  }
+
+  .results-table th, .results-table td {
+      padding: 0.5rem;
+  }
 }

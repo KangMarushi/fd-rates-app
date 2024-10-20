@@ -4,7 +4,7 @@ import './FdCalculator.css'; // Ensure you have styles defined for loading anima
 const FdCalculator = () => {
     const [amount, setAmount] = useState('');
     const [tenure, setTenure] = useState('7 days'); // Default to '7 days'
-    const [compounding, setCompounding] = useState('yearly');
+    const [compounding, setCompounding] = useState('quarterly');
     const [tds, setTds] = useState(0);
     const [payout, setPayout] = useState('maturity');
     const [showResults, setShowResults] = useState(false);
@@ -30,24 +30,6 @@ const FdCalculator = () => {
         'yearly': 1,
         'half-yearly': 2,
         'quarterly': 4,
-    };
-
-    // Map results and remove unwanted columns based on conditions
-    const mapResults = (results) => {
-        return results.map((result) => {
-            // If tds is 0, remove TDS related columns
-            if (tds === 0) {
-                delete result.tdsDeductible;
-                delete result.interestAfterTds;
-            }
-
-            // If it's not a 'Special schemes in Days', remove High ROI Tenure
-            if (tenure !== 'Special schemes in Days') {
-                delete result.highRoiTenure;
-            }
-
-            return result;
-        });
     };
 
     const handleCalculate = async () => {
@@ -103,33 +85,12 @@ const FdCalculator = () => {
 
         // Sort by maturity value in descending order
         const sortedResults = calculatedResults.sort((a, b) => b.maturityValue - a.maturityValue);
-        setResults(mapResults(sortedResults)); // Apply mapping function
+        setResults(sortedResults);
         setShowResults(true);
 
         setLoadingMessage('Deducting TDS!');
         setLoading(false);
     };
-
-    // Row component to handle conditional column rendering
-    const ResultRow = ({ result }) => (
-        <tr>
-            <td>{result.bank}</td>
-            <td>{result.roi}</td>
-            <td>{result.maturityValue.toFixed(2)}</td>
-            <td>{result.interestEarned.toFixed(2)}</td>
-            {/* Conditionally render TDS columns */}
-            {tds !== 0 && (
-                <>
-                    <td>{result.tdsDeductible.toFixed(2)}</td>
-                    <td>{result.interestAfterTds.toFixed(2)}</td>
-                </>
-            )}
-            {/* Conditionally render High ROI Tenure */}
-            {tenure === 'Special schemes in Days' && result.highRoiTenure && (
-                <td>{result.highRoiTenure}</td>
-            )}
-        </tr>
-    );
 
     return (
         <div className="calculator-container">
@@ -202,22 +163,22 @@ const FdCalculator = () => {
                                 <th>Interest Rate (%)</th>
                                 <th>Maturity Value</th>
                                 <th>Interest Earned</th>
-                                {/* Conditionally render TDS column headers */}
-                                {tds !== 0 && (
-                                    <>
-                                        <th>TDS Deductible</th>
-                                        <th>Interest After TDS</th>
-                                    </>
-                                )}
-                                {/* Conditionally render High ROI Tenure header */}
-                                {tenure === 'Special schemes in Days' && results.some(result => result.highRoiTenure) && (
-                                    <th>High ROI Tenure</th>
-                                )}
+                                {tds !== 0 && <th>TDS Deductible</th>} {/* Show TDS Deductible only if TDS is not 0 */}
+                                {tds !== 0 && <th>Interest After TDS</th>} {/* Show Interest After TDS only if TDS is not 0 */}
+                                {results.some(result => result.highRoiTenure) && <th>High ROI Tenure</th>} {/* Conditional rendering of the header */}
                             </tr>
                         </thead>
                         <tbody>
                             {results.map((result, index) => (
-                                <ResultRow key={index} result={result} />
+                                <tr key={index}>
+                                    <td>{result.bank}</td>
+                                    <td>{result.roi}</td>
+                                    <td>{result.maturityValue.toFixed(2)}</td>
+                                    <td>{result.interestEarned.toFixed(2)}</td>
+                                    {tds !== 0 && <td>{result.tdsDeductible.toFixed(2)}</td>} {/* Conditional rendering of TDS Deductible */}
+                                    {tds !== 0 && <td>{result.interestAfterTds.toFixed(2)}</td>} {/* Conditional rendering of Interest After TDS */}
+                                    {result.highRoiTenure && <td>{result.highRoiTenure}</td>} {/* Conditional rendering of High ROI Tenure */}
+                                </tr>
                             ))}
                         </tbody>
                     </table>
