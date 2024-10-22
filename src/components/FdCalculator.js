@@ -51,20 +51,30 @@ const FdCalculator = () => {
 
         setLoadingMessage('Calculating Maturity Amount...');
 
-        const tenureMonths = getTenureInMonths(tenure);
-        const calculatedResults = apiData.map((bank) => {
-            const rate = (tenure === 'Special schemes in Days')
-                ? bank['High ROI'] // Use highest ROI for special schemes
-                : bank.Rates[tenure]; // Fetch rate based on selected tenure
-            
-            if (!rate) {
-                console.warn(`No interest rate available for tenure ${tenure} in bank ${bank['Bank Name']}`);
-                return null;
-            }
+        const tenureMonths = getTenureInMonths(tenure);  // Convert tenure to months if needed
+    const calculatedResults = apiData.map((bank) => {
+        let rate;
+        let tenureInDays;
+
+        // Check if the selected tenure is "Special schemes in Days"
+        if (tenure === 'Special schemes in Days') {
+            rate = bank['High ROI'];  // Use the High ROI rate for special schemes
+            tenureInDays = parseInt(bank['High ROI Tenure'].split(' ')[0]);  // Extract tenure days from "444 Days" etc.
+        } else {
+            rate = bank.Rates[tenure];  // Use the regular rate for standard tenures
+        }
+
+        if (!rate) {
+            console.warn(`No interest rate available for tenure ${tenure} in bank ${bank['Bank Name']}`);
+            return null;  // Skip banks that don't have rates for the selected tenure
+        }
+
+        // Use tenure in days for special schemes, otherwise calculate with months
+        const tenureDuration = tenureInDays || (tenureMonths * 30);  // For regular tenures, use months converted to days
 
             // Calculate maturity value
             const frequency = compoundingMap[compounding];
-            const maturityValue = amount * Math.pow(1 + rate / (100 * frequency), frequency * tenureMonths / 12);
+            const maturityValue = amount * Math.pow(1 + rate / (100 * frequency), frequency * tenureDuration / 365);
             const interestEarned = maturityValue - amount;
             const tdsDeductible = (tds / 100) * interestEarned;
             const interestAfterTds = interestEarned - tdsDeductible;
