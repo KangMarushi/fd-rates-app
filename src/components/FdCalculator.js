@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import './FdCalculator.css'; // Ensure you have styles defined for loading animation and table
+import './FdCalculator.css';
 
 const FdCalculator = () => {
+    const [isSeniorCitizen, setIsSeniorCitizen] = useState(false);
     const [amount, setAmount] = useState('');
-    const [tenure, setTenure] = useState('1 year'); // Default to '7 days'
-    const [compounding, setCompounding] = useState('quarterly');
+    const [tenure, setTenure] = useState('7 days');
+    const [compounding, setCompounding] = useState('yearly');
     const [tds, setTds] = useState(0);
     const [payout, setPayout] = useState('maturity');
     const [showResults, setShowResults] = useState(false);
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [loadingMessage, setLoadingMessage] = useState(''); // State for loading message
-    const [error, setError] = useState(null); // State for error
+    const [loadingMessage, setLoadingMessage] = useState('');
+    const [error, setError] = useState(null);
 
     const getTenureInMonths = (tenureLabel) => {
         switch (tenureLabel) {
@@ -26,17 +27,14 @@ const FdCalculator = () => {
         }
     };
 
-    const compoundingMap = {
-        'yearly': 1,
-        'half-yearly': 2,
-        'quarterly': 4,
+    // Function to handle user selection (toggle between Individual and Senior Citizen)
+    const handleUserTypeChange = (event) => {
+    setIsSeniorCitizen(event.target.value === 'senior');
     };
 
     const handleCalculate = async () => {
         setLoading(true);
         setLoadingMessage('Fetching Interest Rates...');
-
-        // Fetch FD data from the API
         let apiData = [];
         try {
             const response = await fetch('https://fd-roi-api.onrender.com/api/rates');
@@ -72,33 +70,47 @@ const FdCalculator = () => {
         // Use tenure in days for special schemes, otherwise calculate with months
         const tenureDuration = tenureInDays || (tenureMonths * 30);  // For regular tenures, use months converted to days
 
-            // Calculate maturity value
-            const frequency = compoundingMap[compounding];
-            const maturityValue = amount * Math.pow(1 + rate / (100 * frequency), frequency * tenureDuration / 365);
-            const interestEarned = maturityValue - amount;
+
+            let maturityValue = 0;
+            let monthlyInterest = 0;
+            let interestEarned = 0;
+            const adjustedRate = isSeniorCitizen ? rate + 0.5 : rate;
+
+            if (payout === 'maturity') {
+                // Compounding logic
+                const frequency = compounding === 'monthly' ? 0 : { yearly: 1, 'half-yearly': 2, quarterly: 4 }[compounding];
+                if (frequency) {
+                    maturityValue = amount * Math.pow(1 + adjustedRate / (100 * frequency), frequency * tenureDuration / 365);
+                    interestEarned = maturityValue - amount;
+                } else {
+                    interestEarned = (amount * adjustedRate * tenureDuration) / 365 / 100;
+                    maturityValue = amount + interestEarned;
+                }
+            } else if (payout === 'monthly') {
+                // Calculate monthly payout
+                monthlyInterest = (amount * adjustedRate) / 12 / 100;
+                interestEarned = monthlyInterest * tenureDuration / 30;
+                maturityValue = amount + interestEarned;
+            }
+
             const tdsDeductible = (tds / 100) * interestEarned;
             const interestAfterTds = interestEarned - tdsDeductible;
 
-            // Prepare result object
-            const result = {
+            return {
                 bank: bank['Bank Name'],
                 maturityValue,
                 interestEarned,
+                monthlyInterest,
                 tdsDeductible,
                 interestAfterTds,
-                roi: rate, // Interest rate used for calculation
-                highRoiTenure: tenure === 'Special schemes in Days' ? bank['High ROI Tenure'] || '' : null, // High ROI tenure only for special schemes
+                roi: adjustedRate,
+                highRoiTenure: tenure === 'Special schemes in Days' ? bank['High ROI Tenure'] || '' : null,
             };
+        }).filter(result => result !== null);
 
-            return result;
-        }).filter(result => result !== null); // Filter out invalid entries
-
-        // Sort by maturity value in descending order
         const sortedResults = calculatedResults.sort((a, b) => b.maturityValue - a.maturityValue);
         setResults(sortedResults);
         setShowResults(true);
-
-        setLoadingMessage('Deducting TDS!');
         setLoading(false);
     };
 
@@ -106,13 +118,25 @@ const FdCalculator = () => {
         <div className="calculator-container">
             <h2>FD Calculator</h2>
             <form>
-                <div>
-                    <label>Amount:</label>
-                    <input
-                        type="number"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                    />
+                {/* Input fields */}
+                <div className="form-row">
+                    <label className="user-type-label">
+                    User Type:
+                    <select onChange={handleUserTypeChange} className="user-type-dropdown">
+                        <option value="individual">Individual</option>
+                        <option value="senior">Senior Citizen</option>
+                    </select>
+                    </label>
+
+                    <label className="amount-label">
+                        Amount:
+                        <input 
+                        type="number" 
+                        value={amount} 
+                        onChange={(e) => setAmount(e.target.value)} 
+                        className="amount-input"
+                        />
+                    </label>
                 </div>
                 <div>
                     <label>Tenure:</label>
@@ -150,18 +174,14 @@ const FdCalculator = () => {
                         <option value="monthly">Monthly</option>
                     </select>
                 </div>
-                <button type="button" onClick={handleCalculate}>
-                    Calculate
-                </button>
+                <button type="button" onClick={handleCalculate}>Calculate</button>
             </form>
 
             {loading && (
                 <div className="loading-animation">
-                    <span>{loadingMessage} <span className="loader">/</span></span>
+                    <span>{loadingMessage}</span>
                 </div>
             )}
-
-            {error && <div className="error-message">{error}</div>}
 
             {showResults && (
                 <div className="results-container">
@@ -171,11 +191,11 @@ const FdCalculator = () => {
                             <tr>
                                 <th>Bank</th>
                                 <th>Interest Rate (%)</th>
-                                <th>Maturity Value</th>
+                                <th>{payout === 'maturity' ? 'Maturity Value' : 'Monthly Interest'}</th>
                                 <th>Interest Earned</th>
-                                {tds !== 0 && <th>TDS Deductible</th>} {/* Show TDS Deductible only if TDS is not 0 */}
-                                {tds !== 0 && <th>Interest After TDS</th>} {/* Show Interest After TDS only if TDS is not 0 */}
-                                {results.some(result => result.highRoiTenure) && <th>High ROI Tenure</th>} {/* Conditional rendering of the header */}
+                                {tds !== 0 && <th>TDS Deductible</th>}
+                                {tds !== 0 && <th>Interest After TDS</th>}
+                                {results.some(result => result.highRoiTenure) && <th>High ROI Tenure</th>}
                             </tr>
                         </thead>
                         <tbody>
@@ -183,11 +203,11 @@ const FdCalculator = () => {
                                 <tr key={index}>
                                     <td>{result.bank}</td>
                                     <td>{result.roi}</td>
-                                    <td>{result.maturityValue.toFixed(2)}</td>
+                                    <td>{payout === 'maturity' ? result.maturityValue.toFixed(2) : result.monthlyInterest.toFixed(2)}</td>
                                     <td>{result.interestEarned.toFixed(2)}</td>
-                                    {tds !== 0 && <td>{result.tdsDeductible.toFixed(2)}</td>} {/* Conditional rendering of TDS Deductible */}
-                                    {tds !== 0 && <td>{result.interestAfterTds.toFixed(2)}</td>} {/* Conditional rendering of Interest After TDS */}
-                                    {result.highRoiTenure && <td>{result.highRoiTenure}</td>} {/* Conditional rendering of High ROI Tenure */}
+                                    {tds !== 0 && <td>{result.tdsDeductible.toFixed(2)}</td>}
+                                    {tds !== 0 && <td>{result.interestAfterTds.toFixed(2)}</td>}
+                                    {result.highRoiTenure && <td>{result.highRoiTenure}</td>}
                                 </tr>
                             ))}
                         </tbody>

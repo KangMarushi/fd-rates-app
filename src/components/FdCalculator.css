@@ -129,3 +129,31 @@ button:hover {
       padding: 0.5rem;
   }
 }
+* New Flexbox CSS for form-row layout */
+.form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.user-type-label, .amount-label {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.user-type-dropdown {
+  width: 30%;  /* Set the width of the dropdown/toggle to 25% */
+  padding: 0.75rem;
+}
+
+.amount-input {
+  width: 70%;  /* Set the width of the amount input to 70% */
+  padding: 0.75rem;
+}
+
+@media (max-width: 600px) {
+  .user-type-dropdown, .amount-input {
+    width: 100%;  /* Make inputs 100% on smaller screens for better responsiveness */
+  }
+}
