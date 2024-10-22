@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/fd-rates-app/static/css/main.28742c01.css",
-    "main.js": "/fd-rates-app/static/js/main.3a2dafc6.js",
+    "main.js": "/fd-rates-app/static/js/main.14d80c8d.js",
     "static/js/453.6de2a28d.chunk.js": "/fd-rates-app/static/js/453.6de2a28d.chunk.js",
     "index.html": "/fd-rates-app/index.html",
     "main.28742c01.css.map": "/fd-rates-app/static/css/main.28742c01.css.map",
-    "main.3a2dafc6.js.map": "/fd-rates-app/static/js/main.3a2dafc6.js.map",
+    "main.14d80c8d.js.map": "/fd-rates-app/static/js/main.14d80c8d.js.map",
     "453.6de2a28d.chunk.js.map": "/fd-rates-app/static/js/453.6de2a28d.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.28742c01.css",
-    "static/js/main.3a2dafc6.js"
+    "static/js/main.14d80c8d.js"
   ]
 }
