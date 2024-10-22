@@ -129,7 +129,7 @@ button:hover {
       padding: 0.5rem;
   }
 }
-* New Flexbox CSS for form-row layout */
+/* New Flexbox CSS for form-row layout */
 .form-row {
   display: flex;
   align-items: center;
