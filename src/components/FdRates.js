@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import styles from './FdRates.css';
 
 function FdRates() {
   const [rates, setRates] = useState([]);
@@ -57,46 +58,80 @@ function FdRates() {
     return rates;
   }, [rates, sortConfig]);
 
+  const tenures = ["7 days", "30 days", "3 month", "6 month", "1 year", "2 year", "5 year"];
+
   if (loading) {
-    return <div>Loading FD Rates...</div>;
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}></div>
+        <p>Loading FD Rates...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div className={styles.errorContainer}>
+        <div className={styles.errorMessage}>
+          <span className={styles.errorIcon}>⚠️</span>
+          Error: {error}
+        </div>
+      </div>
+    );
   }
 
-  const tenures = ["7 days", "30 days", "3 month", "6 month", "1 year", "2 year", "5 year"];
+  const getSortIcon = (key) => {
+    if (sortConfig.key !== key) return '↕️';
+    return sortConfig.direction === 'ascending' ? '↑' : '↓';
+  };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-      <div>
-        <h2>FD Rates Table</h2>
-        <table border="1" cellPadding="10" style={{ borderCollapse: 'collapse', width: '100%' }}>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Fixed Deposit Interest Rates</h2>
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
           <thead>
             <tr>
-              <th onClick={() => handleSort('Bank Name')} style={{ cursor: 'pointer' }}>
-                Bank Name {sortConfig.key === 'Bank Name' ? (sortConfig.direction === 'ascending' ? '↑' : '↓') : ''}
+              <th onClick={() => handleSort('Bank Name')}>
+                <div className={styles.headerCell}>
+                  Bank Name
+                  <span className={styles.sortIcon}>{getSortIcon('Bank Name')}</span>
+                </div>
               </th>
-              {tenures.map((tenure, index) => (
-                <th key={index} onClick={() => handleSort(`Rates.${tenure}`)} style={{ cursor: 'pointer' }}>
-                  {tenure} {sortConfig.key === `Rates.${tenure}` ? (sortConfig.direction === 'ascending' ? '↑' : '↓') : ''}
+              {tenures.map((tenure) => (
+                <th key={tenure} onClick={() => handleSort(`Rates.${tenure}`)}>
+                  <div className={styles.headerCell}>
+                    {tenure}
+                    <span className={styles.sortIcon}>
+                      {getSortIcon(`Rates.${tenure}`)}
+                    </span>
+                  </div>
                 </th>
               ))}
-              <th onClick={() => handleSort('High ROI')} style={{ cursor: 'pointer' }}>
-                Highest ROI {sortConfig.key === 'High ROI' ? (sortConfig.direction === 'ascending' ? '↑' : '↓') : ''}
+              <th onClick={() => handleSort('High ROI')}>
+                <div className={styles.headerCell}>
+                  Highest ROI
+                  <span className={styles.sortIcon}>{getSortIcon('High ROI')}</span>
+                </div>
               </th>
             </tr>
           </thead>
           <tbody>
             {sortedRates.map((rate, index) => (
               <tr key={index}>
-                <td>{rate['Bank Name'] || 'N/A'}</td>
-                {tenures.map((tenure, tIndex) => (
-                  <td key={tIndex}>
-                    {rate.Rates && rate.Rates[tenure] !== undefined ? `${rate.Rates[tenure]}%` : 'N/A'}
+                <td className={styles.bankName}>{rate['Bank Name'] || 'N/A'}</td>
+                {tenures.map((tenure) => (
+                  <td key={tenure} className={styles.rateCell}>
+                    {rate.Rates && rate.Rates[tenure] !== undefined 
+                      ? <span className={styles.rateValue}>{rate.Rates[tenure]}%</span>
+                      : <span className={styles.naValue}>N/A</span>
+                    }
                   </td>
                 ))}
-                <td>{rate['High ROI']}% ({rate['High ROI Tenure']})</td>
+                <td className={styles.highRoi}>
+                  <span className={styles.rateValue}>{rate['High ROI']}%</span>
+                  <span className={styles.tenure}>({rate['High ROI Tenure']})</span>
+                </td>
               </tr>
             ))}
           </tbody>

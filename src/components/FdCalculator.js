@@ -4,8 +4,8 @@ import './FdCalculator.css';
 const FdCalculator = () => {
     const [isSeniorCitizen, setIsSeniorCitizen] = useState(false);
     const [amount, setAmount] = useState('');
-    const [tenure, setTenure] = useState('7 days');
-    const [compounding, setCompounding] = useState('yearly');
+    const [tenure, setTenure] = useState('1 year');
+    const [compounding, setCompounding] = useState('quarterly');
     const [tds, setTds] = useState(0);
     const [payout, setPayout] = useState('maturity');
     const [showResults, setShowResults] = useState(false);
@@ -114,67 +114,126 @@ const FdCalculator = () => {
         setLoading(false);
     };
 
+
     return (
         <div className="calculator-container">
-            <h2>FD Calculator</h2>
-            <form>
-                {/* Input fields */}
-                <div className="form-row">
-                    <label className="user-type-label">
-                    User Type:
-                    <select onChange={handleUserTypeChange} className="user-type-dropdown">
-                        <option value="individual">Individual</option>
-                        <option value="senior">Senior Citizen</option>
-                    </select>
-                    </label>
+            <div className="calculator-header">
+                <h2>Fixed Deposit Calculator</h2>
+                <p>Calculate your FD returns with live Interest Rates across Banks</p>
+            </div>
 
-                    <label className="amount-label">
-                        Amount:
-                        <input 
-                        type="number" 
-                        value={amount} 
-                        onChange={(e) => setAmount(e.target.value)} 
-                        className="amount-input"
-                        />
-                    </label>
+            <form onSubmit={(e) => e.preventDefault()}>
+                <div className="form-row">
+                    {/* User Type Toggle */}
+                    <div className="input-group">
+                        <label>User Type</label>
+                        <div className="toggle-switch">
+                            <div className="toggle-slider">
+                                <div 
+                                    className={`toggle-option ${!isSeniorCitizen ? 'active' : ''}`}
+                                    onClick={() => setIsSeniorCitizen(false)}
+                                >
+                                    Individual
+                                </div>
+                                <div 
+                                    className={`toggle-option ${isSeniorCitizen ? 'active' : ''}`}
+                                    onClick={() => setIsSeniorCitizen(true)}
+                                >
+                                    Senior Citizen
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Amount Input */}
+                    <div className="input-group">
+                        <label>Amount</label>
+                        <div className="amount-input">
+                            <input
+                                type="number"
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value)}
+                                placeholder="Enter amount"
+                            />
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label>Tenure:</label>
-                    <select value={tenure} onChange={(e) => setTenure(e.target.value)}>
-                        <option value="7 days">7 Days</option>
-                        <option value="30 days">30 Days</option>
-                        <option value="3 month">3 Months</option>
-                        <option value="6 month">6 Months</option>
-                        <option value="1 year">1 Year</option>
-                        <option value="2 year">2 Years</option>
-                        <option value="5 year">5 Years</option>
-                        <option value="Special schemes in Days">Special schemes in Days</option>
-                    </select>
+
+                <div className="form-row">
+                    {/* Tenure Selection */}
+                    <div className="input-group">
+                        <label>Tenure</label>
+                        <select value={tenure} onChange={(e) => setTenure(e.target.value)}>
+                            <option value="7 days">7 Days</option>
+                            <option value="30 days">30 Days</option>
+                            <option value="3 month">3 Months</option>
+                            <option value="6 month">6 Months</option>
+                            <option value="1 year">1 Year</option>
+                            <option value="2 year">2 Years</option>
+                            <option value="5 year">5 Years</option>
+                            <option value="Special schemes in Days">Special Schemes</option>
+                        </select>
+                    </div>
+
+                    {/* Compounding Frequency */}
+                    <div className="input-group">
+                        <label>Compounding Frequency</label>
+                        <select value={compounding} onChange={(e) => setCompounding(e.target.value)}>
+                            <option value="yearly">Yearly</option>
+                            <option value="half-yearly">Half-Yearly</option>
+                            <option value="quarterly">Quarterly</option>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label>Compounding Frequency:</label>
-                    <select value={compounding} onChange={(e) => setCompounding(e.target.value)}>
-                        <option value="yearly">Yearly</option>
-                        <option value="half-yearly">Half-Yearly</option>
-                        <option value="quarterly">Quarterly</option>
-                    </select>
+
+                <div className="form-row">
+                    {/* TDS Selection */}
+                    <div className="input-group">
+                        <label>TDS Percentage</label>
+                        <select value={tds} onChange={(e) => setTds(Number(e.target.value))}>
+                            <option value={0}>0%</option>
+                            <option value={10}>10%</option>
+                            <option value={20}>20%</option>
+                        </select>
+                    </div>
+
+                    {/* Payout Options */}
+                    <div className="input-group">
+                        <label>Payout Frequency</label>
+                        <div className="radio-group">
+                            <div className="radio-option">
+                                <input
+                                    type="radio"
+                                    id="maturity"
+                                    name="payout"
+                                    value="maturity"
+                                    checked={payout === 'maturity'}
+                                    onChange={(e) => setPayout(e.target.value)}
+                                />
+                                <label htmlFor="maturity" className="radio-label">
+                                    At Maturity
+                                </label>
+                            </div>
+                            <div className="radio-option">
+                                <input
+                                    type="radio"
+                                    id="monthly"
+                                    name="payout"
+                                    value="monthly"
+                                    checked={payout === 'monthly'}
+                                    onChange={(e) => setPayout(e.target.value)}
+                                />
+                                <label htmlFor="monthly" className="radio-label">
+                                    Monthly
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label>TDS Percentage:</label>
-                    <select value={tds} onChange={(e) => setTds(e.target.value)}>
-                        <option value={0}>0%</option>
-                        <option value={10}>10%</option>
-                        <option value={20}>20%</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Payout:</label>
-                    <select value={payout} onChange={(e) => setPayout(e.target.value)}>
-                        <option value="maturity">Maturity</option>
-                        <option value="monthly">Monthly</option>
-                    </select>
-                </div>
-                <button type="button" onClick={handleCalculate}>Calculate</button>
+
+                <button type="button" onClick={handleCalculate}>
+                    Calculate Returns
+                </button>
             </form>
 
             {loading && (
@@ -183,9 +242,15 @@ const FdCalculator = () => {
                 </div>
             )}
 
+            {error && (
+                <div className="error-message">
+                    {error}
+                </div>
+            )}
+
             {showResults && (
                 <div className="results-container">
-                    <h3>Results</h3>
+                    <h3>Investment Summary</h3>
                     <table className="results-table">
                         <thead>
                             <tr>
@@ -195,18 +260,23 @@ const FdCalculator = () => {
                                 <th>Interest Earned</th>
                                 {tds !== 0 && <th>TDS Deductible</th>}
                                 {tds !== 0 && <th>Interest After TDS</th>}
-                                {results.some(result => result.highRoiTenure) && <th>High ROI Tenure</th>}
+                                {results.some(result => result.highRoiTenure) && (
+                                    <th>High ROI Tenure</th>
+                                )}
                             </tr>
                         </thead>
                         <tbody>
                             {results.map((result, index) => (
                                 <tr key={index}>
                                     <td>{result.bank}</td>
-                                    <td>{result.roi}</td>
-                                    <td>{payout === 'maturity' ? result.maturityValue.toFixed(2) : result.monthlyInterest.toFixed(2)}</td>
-                                    <td>{result.interestEarned.toFixed(2)}</td>
-                                    {tds !== 0 && <td>{result.tdsDeductible.toFixed(2)}</td>}
-                                    {tds !== 0 && <td>{result.interestAfterTds.toFixed(2)}</td>}
+                                    <td>{result.roi}%</td>
+                                    <td>₹{payout === 'maturity' 
+                                        ? result.maturityValue.toLocaleString('en-IN', { maximumFractionDigits: 2 })
+                                        : result.monthlyInterest.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+                                    </td>
+                                    <td>₹{result.interestEarned.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>
+                                    {tds !== 0 && <td>₹{result.tdsDeductible.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>}
+                                    {tds !== 0 && <td>₹{result.interestAfterTds.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>}
                                     {result.highRoiTenure && <td>{result.highRoiTenure}</td>}
                                 </tr>
                             ))}
