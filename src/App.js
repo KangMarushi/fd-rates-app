@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import ToolsSection from './components/ToolsSection';
-import FeaturesPreview from './components/FeaturesPreview';
-import AudienceSection from './components/AudienceSection';
+import Navbar from './components/Navbar.js';
+import Hero from './components/Hero.js';
+import ToolsSection from './components/ToolsSection.js';
+import FeaturesPreview from './components/FeaturesPreview.js';
+import AudienceSection from './components/AudienceSection.js';
 
 function App() {
   const [rates, setRates] = useState([]);

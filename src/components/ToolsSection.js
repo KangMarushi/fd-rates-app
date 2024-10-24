@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Calculator, Landmark } from 'lucide-react';
-import FdRates from './FdRates';
-import FdCalculator from './FdCalculator';
+import FdRates from './FdRates.js';
+import FdCalculator from './FdCalculator.js';
 
 function ToolsSection({ rates }) {
   const [activeTab, setActiveTab] = useState(null);

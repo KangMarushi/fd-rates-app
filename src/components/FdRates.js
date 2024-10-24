@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styles from './FdRates.css';
+import styles from './FdRates.module.css'; // Updated to use FdRates.module.css
 
 function FdRates() {
   const [rates, setRates] = useState([]);
@@ -94,7 +94,7 @@ function FdRates() {
             <tr>
               <th onClick={() => handleSort('Bank Name')}>
                 <div className={styles.headerCell}>
-                  Bank Name
+                  <span>Bank Name</span>
                   <span className={styles.sortIcon}>{getSortIcon('Bank Name')}</span>
                 </div>
               </th>
@@ -102,9 +102,7 @@ function FdRates() {
                 <th key={tenure} onClick={() => handleSort(`Rates.${tenure}`)}>
                   <div className={styles.headerCell}>
                     {tenure}
-                    <span className={styles.sortIcon}>
-                      {getSortIcon(`Rates.${tenure}`)}
-                    </span>
+                    <span className={styles.sortIcon}>{getSortIcon(`Rates.${tenure}`)}</span>
                   </div>
                 </th>
               ))}
@@ -122,7 +120,7 @@ function FdRates() {
                 <td className={styles.bankName}>{rate['Bank Name'] || 'N/A'}</td>
                 {tenures.map((tenure) => (
                   <td key={tenure} className={styles.rateCell}>
-                    {rate.Rates && rate.Rates[tenure] !== undefined 
+                    {rate.Rates && rate.Rates[tenure] !== undefined
                       ? <span className={styles.rateValue}>{rate.Rates[tenure]}%</span>
                       : <span className={styles.naValue}>N/A</span>
                     }
