@@ -6,6 +6,7 @@ import ToolsSection from './components/ToolsSection.js';
 import FeaturesPreview from './components/FeaturesPreview.js';
 import AudienceSection from './components/AudienceSection.js';
 
+
 function App() {
   const [rates, setRates] = useState([]);
 
