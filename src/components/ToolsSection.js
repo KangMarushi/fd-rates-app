@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Calculator, Landmark, MessageSquareShare, Percent, IndianRupee, SquarePercent } from 'lucide-react';
+import { Calculator, ChartNoAxesCombined, MessageSquareShare, Percent, IndianRupee, SquarePercent, TrendingUp } from 'lucide-react';
 import FdRates from './FdRates.js';
 import FdCalculator from './FdCalculator.js';
 import LoanComparison from './LoanComparison.js';
 import FeedbackForm from './FeedbackForm.js';
 import EMICalculator from './EMICalculator.js';
-
+import SIPCalculator from './SIPCalculator.js';
+import EnhancedSIPCalculator from './EnhancedSIPCalculator.js'
 
 
 function ToolsSection({ rates }) {
@@ -21,6 +22,7 @@ function ToolsSection({ rates }) {
           <IndianRupee size={16} />
           <span className="tab-text">FD Rates Comparison</span>
         </button>
+
         <button 
           className={`tab-trigger ${activeTab === 'calculator' ? 'active' : ''}`}
           onClick={() => setActiveTab(activeTab === 'calculator' ? null : 'calculator')}
@@ -28,18 +30,36 @@ function ToolsSection({ rates }) {
           <Calculator size={16} />
           <span className="tab-text">Returns Calculator</span>
         </button>
+
+        <button 
+          className={`tab-trigger ${activeTab === 'sipcalculator' ? 'active' : ''}`}
+          onClick={() => setActiveTab(activeTab === 'sipcalculator' ? null : 'sipcalculator')}
+        >
+        <TrendingUp size={16} />
+          <span className="tab-text">SIP Calculator</span>
+        </button>
+
+        <button 
+          className={`tab-trigger ${activeTab === 'enhancedsipcalculator' ? 'active' : ''}`}
+          onClick={() => setActiveTab(activeTab === 'enhancedsipcalculator' ? null : 'enhancedsipcalculator')}
+        >
+        <ChartNoAxesCombined size={16} />
+          <span className="tab-text">Enhanced SIP Calculator</span>
+        </button>
+
         <button 
           className={`tab-trigger ${activeTab === 'loanComparison' ? 'active' : ''}`}
           onClick={() => setActiveTab(activeTab === 'loanComparison' ? null : 'loanComparison')}
         >
-          <Percent size={16} />
+        <Percent size={16} />
           <span className="tab-text">Personal Loan ROI Comparison</span>
         </button>
+
         <button 
           className={`tab-trigger ${activeTab === 'emiCalculator' ? 'active' : ''}`}
           onClick={() => setActiveTab(activeTab === 'emiCalculator' ? null : 'emiCalculator')}
         >
-          <SquarePercent size={16} />
+        <SquarePercent size={16} />
           <span className="tab-text">Persoanl Loan EMI Calculator</span>
         </button>
 
@@ -58,10 +78,12 @@ function ToolsSection({ rates }) {
           <div className="card-content">
             {activeTab === 'rates' && <FdRates rates={rates} />}
             {activeTab === 'calculator' && <FdCalculator rates={rates} />}
+            {activeTab === 'sipcalculator' && <SIPCalculator />}
             {activeTab === 'loanComparison' && <LoanComparison />}
             {activeTab === 'emiCalculator' && <EMICalculator />}
             {activeTab === 'feedback' && <FeedbackForm />}
-
+            {activeTab === 'enhancedsipcalculator' && <EnhancedSIPCalculator/>}
+            
           </div>
         </div>
       )}
